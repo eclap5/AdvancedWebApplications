@@ -1,0 +1,63 @@
+body {
+    overflow-anchor: auto;
+}
+
+.wiki-img {
+    width: 100%;
+}
+
+.wiki-item {
+    margin-left: 10px;
+    margin-right: 10px;
+    box-shadow: 0 0 5px 5px blue;
+}
+
+.wiki-header {
+    text-align: center;
+}
+
+.wiki-content {
+    padding: 2%;
+}
+
+.container {
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+@media (min-width: 600px) {
+    .wiki-content {
+        display: flex;
+        flex-direction: row-reverse;
+    }
+
+    .img-container {
+        min-width: 50%;
+        max-width: 50%;
+    }
+
+    .wiki-text {
+        min-width: 50%;
+        max-width: 50%;
+    }
+
+    .container {
+        max-width: 960px;
+        margin: 0 auto;
+    }
+}
+
+
+
+/* 
+<div class="wiki-item" >
+  <h1 class="wiki-header">Breed X</h1>
+  <div class="wiki-content">
+     <p class="wiki-text">
+       Some text about this breed.
+     </p>
+     <div class="img-container">
+       <img class="wiki-img" src="">
+     </div>
+  </div>
+</div> */
