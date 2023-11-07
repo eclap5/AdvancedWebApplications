@@ -1,0 +1,14 @@
+{
+  "name": "week2",
+  "version": "1.0.0",
+  "description": "Week 2 tasks",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Aleksi Haapalainen",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
