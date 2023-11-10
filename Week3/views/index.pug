@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  h1= title
+  p My todos
+  label(for="input-name") Your name: 
+  input(type="text", name="Your name:" id="input-name")
+  br
+  label(for="input-task") New task: 
+  input(type="text", name="Task:", id="input-task")
+  br
+  button(id="submit-data") Add task
