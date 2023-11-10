@@ -1,5 +1,5 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
 let tasks = []
 
@@ -8,24 +8,26 @@ router.get('/', (req, res, next) => {
   res.render('index', { title: 'Todo' });
 });
 
-if (tasks.length === 0) {
   router.post('/', (req, res, next) => {
-    let data = req.body
-    tasks.push(data)
-    res.json(tasks)
-  })
-  console.log(tasks)
-} else if (tasks.length > 0) {
-  router.post('/', (req, res, next) => {
-    let data = req.body
-    for (let i = 0; i < tasks.length; i++) {
-      if (tasks[i].name === data.name) {
-        tasks[i].todos.push(data.todos[0])
-        res.json(tasks)
+    if (tasks.length === 0) {
+      tasks.push(req.body)
+      res.json({ userActionStatus: 'User added' })
+    }
+    else {
+      let nameFound = false
+      for (let i = 0; i < tasks.length; i++) {
+        if (tasks[i].name === req.body.name) {
+          tasks[i].todos.push(req.body.todos[0])
+          res.json({ userActionStatus: 'Todo added' })
+          nameFound = true
+        }
+      }
+      if (!nameFound) {
+        tasks.push(req.body)
+        res.json({ userActionStatus: 'User added' })
       }
     }
+    console.log(tasks)
   })
-  console.log(tasks)
-}
 
 module.exports = router;

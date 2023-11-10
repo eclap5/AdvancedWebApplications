@@ -1,4 +1,4 @@
-document.getElementById("submit-data").addEventListener("click", () => {
+document.getElementById("submit-data").addEventListener("click", async () => {
     const nameInput = document.getElementById("input-name")
     const taskInput = document.getElementById("input-task")
 
@@ -10,7 +10,7 @@ document.getElementById("submit-data").addEventListener("click", () => {
         todos: [taskData]
     }
 
-    fetch("/", {
+    const response = await fetch("/", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -18,7 +18,12 @@ document.getElementById("submit-data").addEventListener("click", () => {
         body: JSON.stringify(data)
     })
 
+    const responseData = await response.json()
+
+    document.getElementById('status').innerText = responseData.userActionStatus
+
     console.log(data)
+    console.log(responseData.userActionStatus)
 
     nameInput.value = ""
     taskInput.value = ""
