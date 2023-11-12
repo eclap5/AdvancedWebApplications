@@ -22,9 +22,36 @@ document.getElementById("submit-data").addEventListener("click", async () => {
 
     document.getElementById('status').innerText = responseData.userActionStatus
 
-    console.log(data)
-    console.log(responseData.userActionStatus)
-
     nameInput.value = ""
     taskInput.value = ""
+})
+
+document.getElementById("search").addEventListener("click", async () => {
+    const searchInput = document.getElementById("search-name")
+    const taskList = document.getElementById("tasks")
+    const nameElement = document.getElementById("name")
+
+    if (taskList.hasChildNodes()) {
+        while (taskList.hasChildNodes()) {
+            taskList.removeChild(taskList.firstChild)
+        }
+    }
+
+    const response = await fetch(`/user/${searchInput.value}`)
+    
+    if (response.ok) {
+        const userData = await response.json()
+
+        if ('searchStatus' in userData) {
+            nameElement.innerText = userData.searchStatus
+        } else {
+            nameElement.innerHTML = userData.name
+            for (let i = 0; i < userData.todos.length; i++) {
+                let newLi = document.createElement('li')
+                newLi.textContent = userData.todos[i]
+                taskList.appendChild(newLi)
+            }
+        }
+    }
+    searchInput.value = ''
 })
