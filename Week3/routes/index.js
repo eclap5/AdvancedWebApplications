@@ -30,7 +30,6 @@ router.post('/', (req, res, next) => {
   console.log(tasks)
 })
 
-
 router.get('/user/:id', (req, res, next) => {
   let nameFound = false
   
@@ -42,6 +41,23 @@ router.get('/user/:id', (req, res, next) => {
   }
   if (!nameFound) {
     res.json({ searchStatus: 'User not found' })
+  }
+})
+
+router.delete('/user/:id', (req, res, next) => {
+  let userFound = false
+  
+  for (let i = 0; i < tasks.length; i++) {
+    if (tasks[i].name === req.params.id) {
+      tasks.splice(i, 1)
+      userFound = true
+    }
+  }
+
+  if (userFound) {
+    res.json({ message: 'User deleted' })
+  } else {
+    res.json({ message: 'User not found' })
   }
 })
 
