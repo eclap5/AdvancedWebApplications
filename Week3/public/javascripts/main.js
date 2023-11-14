@@ -12,7 +12,7 @@ document.getElementById('submit-data').addEventListener('click', async () => {
         todos: [taskData]
     }
 
-    const response = await fetch('/', {
+    const response = await fetch('/todo', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -31,7 +31,7 @@ document.getElementById('submit-data').addEventListener('click', async () => {
 document.getElementById('search').addEventListener('click', async () => {
     const searchInput = document.getElementById('search-name')
     const taskList = document.getElementById('tasks')
-    const nameElement = document.getElementById('name')
+    const nameElement = document.getElementById('result-text')
     const deleteBtn = document.getElementById('delete-user')
 
     let userFound = false
@@ -48,12 +48,8 @@ document.getElementById('search').addEventListener('click', async () => {
         } else {
             currentUser = userData.name
             nameElement.innerHTML = userData.name
-            for (let i = 0; i < userData.todos.length; i++) {
-                let newLi = document.createElement('li')
-                newLi.textContent = userData.todos[i]
-                taskList.appendChild(newLi)
-            }
-            userFound = true   
+            appendList(userData, taskList) 
+            userFound = true
         }
     }
     if (userFound) {
@@ -66,18 +62,19 @@ document.getElementById('search').addEventListener('click', async () => {
 
 document.getElementById('delete-user').addEventListener('click', async () => {
     const taskList = document.getElementById('tasks')
-    const nameElement = document.getElementById('name')
+    const nameElement = document.getElementById('result-text')
+    const statusMsg = document.getElementById('status')
     const deleteBtn = document.getElementById('delete-user')
     
     const response = await fetch(`/user/${currentUser}`, {
-        method: 'DELETE',
+        method: 'DELETE'
     })
 
     if (response.ok) {
         const data = await response.json()
-        console.log(data)
         clearList(taskList)
-        nameElement.innerText = data.message
+        statusMsg.innerText = data.message
+        nameElement.innerText = ''
     }
     deleteBtn.style.display = 'none'
 })
@@ -87,5 +84,44 @@ const clearList = (taskList) => {
         while (taskList.hasChildNodes()) {
             taskList.removeChild(taskList.firstChild)
         }
+    }
+}
+
+const appendList = (userData, taskList) => {
+    for (let i = 0; i < userData.todos.length; i++) {
+        let newLi = document.createElement('li')
+        let linkItem = document.createElement('a')
+
+        linkItem.className = 'delete-task'
+        linkItem.href = '#'
+        linkItem.onclick = () => {
+            deleteTask(userData.name, userData.todos[i])
+        }
+        linkItem.textContent = userData.todos[i]
+
+        newLi.appendChild(linkItem)
+        taskList.appendChild(newLi)
+    }
+}
+
+const deleteTask = async (name, task) => {
+    const taskList = document.getElementById('tasks')
+    const response = await fetch('/user', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+            'name': name,
+            'task': task
+        })
+    })
+
+    if (response.ok) {
+        const data = await response.json()
+        console.log(data)
+        document.getElementById('status').innerText = data.message
+        clearList(taskList)
+        appendList(data.userData, taskList)
     }
 }

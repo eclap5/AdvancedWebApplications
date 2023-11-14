@@ -8,7 +8,7 @@ router.get('/', (req, res, next) => {
   res.render('index', { title: 'Todo' });
 });
 
-router.post('/', (req, res, next) => {
+router.post('/todo', (req, res, next) => {
   if (tasks.length === 0) {
     tasks.push(req.body)
     res.json({ userActionStatus: 'User added' })
@@ -56,6 +56,23 @@ router.delete('/user/:id', (req, res, next) => {
 
   if (userFound) {
     res.json({ message: 'User deleted' })
+  } else {
+    res.json({ message: 'User not found' })
+  }
+})
+
+router.put('/user', (req, res, next) => {
+  const index = tasks.findIndex(tasks => tasks.name === req.body.name)
+  console.log(index)
+  console.log(tasks[index].todos.indexOf(req.body.task))
+  const taskIndex = tasks[index].todos.indexOf(req.body.task)
+
+  if (tasks[index].todos[taskIndex] === req.body.task) {
+    tasks[index].todos.splice(taskIndex, 1)
+    res.json({ 
+      message: 'Task deleted',
+      userData: tasks[index]
+    })
   } else {
     res.json({ message: 'User not found' })
   }
