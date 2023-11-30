@@ -1,0 +1,31 @@
+extends layout
+
+block content
+  nav
+    div(class='nav-wrapper')
+      a(href="#", class='brand-logo') Recipe App
+      ul(id='nav-mobile', class='right hide-on-med-and-down')
+        li
+          input(type="search", id="search", placeholder="Search")
+  div(class='container')
+    div(id='result-content', class='col')
+      h3(id='recipe-name')
+      h5(id='ingredient-title', style='display: none') Ingredients:
+      ul(id='ingredient-list')
+      h5(id='instruction-title', style='display: none') Instructions:
+      ol(id='instructions-list')
+      br
+    div(id='input-content', class='col')
+      h6 Name:
+      input(type='text', id='name-text', placeholder='Type recipe name here')
+      div(id='ingredients')
+        h4 Ingredients
+        textarea(id='ingredients-text')
+        button(id='add-ingredient', type='button', class='btn') add
+      div(id='instructions')
+        h4 Instructions
+        textarea(id='instructions-text')
+        button(id='add-instruction', type='button', class='btn') add
+      input(type='file', id='image-input', accept='image/*', multiple)
+      button(id='submit', type='submit', class='btn') submit
+  
