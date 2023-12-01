@@ -17,7 +17,6 @@ router.get('/recipe/:food', (req, res, next) => {
 })
 
 router.post('/recipe/', (req, res, next) => {
-  recipes.push(req.body)
   res.json(req.body)
 })
 
