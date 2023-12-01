@@ -19,3 +19,20 @@ a {
 #add-ingredient {
   margin-top: 1px;
 }
+
+#image-input {
+  margin-top: 10px;
+}
+
+#categories {
+  border: solid grey;
+  border-radius: 5px;
+  border-width: thin;
+  margin: 15px;
+  margin-left: 0;
+  width: 100%;
+}
+
+.category-element {
+  margin: 5px;
+}

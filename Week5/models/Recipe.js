@@ -1,11 +1,12 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
-const Schema = mongoose.Schema;
+const Schema = mongoose.Schema
 
 let Recipe = new Schema({
     name: String,
     ingredients: [String],
-    instructions: [String]
-});
+    instructions: [String],
+    categories: [String]
+})
 
-module.exports = mongoose.model('Recipe', Recipe);
+module.exports = mongoose.model('Recipe', Recipe)

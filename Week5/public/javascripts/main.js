@@ -14,11 +14,13 @@ const ingredientTxt = document.getElementById('ingredients-text')
 const ingredientBtn = document.getElementById('add-ingredient')
 const instructionBtn = document.getElementById('add-instruction')
 const instructionTxt = document.getElementById('instructions-text')
+const categoriesElement = document.getElementById('categories')
 const submitBtn = document.getElementById('submit')
 const fileInput = document.getElementById('image-input')
 
 
 const loadPage = async () => {
+    await fetchCategories()
     addRecipe()
     searchInput.addEventListener('keydown', async (event) => {
         if (event.key === 'Enter')
@@ -30,24 +32,34 @@ const loadPage = async () => {
 const addRecipe = async () => {
     let ingredients = []
     let instructions =[]
+    let categories = []
     let result = {}
+
+    let categoryCount = categoriesElement.childElementCount
 
     instructionBtn.addEventListener('click', () => {
         instructions.push(instructionTxt.value)
         instructionTxt.value = ''
-        console.log('instruction added', instructions)
     })
 
     ingredientBtn.addEventListener('click', () => {
         ingredients.push(ingredientTxt.value)
         ingredientTxt.value = ''
-        console.log('ingredient added', ingredients)
     })
 
     submitBtn.addEventListener('click', async () => {
+        
+        for (let i = 0; i < categoryCount; i++) {
+            let checkbox = document.getElementById(`category-${i}`)
+            if (checkbox.checked){
+                categories.push(checkbox.value)
+            }
+        }
+
         result.name = nameTxt.value
         result.ingredients = ingredients
         result.instructions = instructions
+        result.categories = categories
 
         nameTxt.value = ''
 
@@ -73,6 +85,36 @@ const addRecipe = async () => {
             console.log(`Error when trying to fetch data: ${error.message}`)
         }
     })
+}
+
+
+const fetchCategories = async () => {
+    try {
+        const response = await fetch('/categories')
+        
+        if (!response.ok)
+            throw new Error(`HTTP Error: ${response.status}`)
+        
+        const data = await response.json()
+        loadCategoryElements(data)
+    } catch (error) {
+        console.log(`Error when trying to fetch data: ${error.message}`)
+    }
+}
+
+
+const loadCategoryElements = (data) => {
+    for (let i = 0; i < data.length; i++) {
+        let inputElement = document.createElement('p')
+        inputElement.id = 'category-element'
+        inputElement.className = 'category-element'
+        inputElement.innerHTML = 
+            `<label>
+            <input id='category-${i}' type='checkbox' class='filled-in' value=${data[i]._id} />
+            <span>${data[i].name}</span>
+            </label>`
+        categoriesElement.appendChild(inputElement)
+    }
 }
 
 
@@ -136,7 +178,7 @@ const uploadImage = async () => {
         formData.append('images', fileInput.files[i])
     }
     
-    console.log(formData)
+    // console.log(formData)
 
     try {
         const response = await fetch('/images', {
