@@ -6,7 +6,8 @@ let Recipe = new Schema({
     name: String,
     ingredients: [String],
     instructions: [String],
-    categories: [String]
+    categories: [String],
+    images: [String]
 })
 
 module.exports = mongoose.model('Recipe', Recipe)

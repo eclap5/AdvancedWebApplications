@@ -33,6 +33,7 @@ const addRecipe = async () => {
     let ingredients = []
     let instructions =[]
     let categories = []
+    let images = []
     let result = {}
 
     let categoryCount = categoriesElement.childElementCount
@@ -64,7 +65,8 @@ const addRecipe = async () => {
         nameTxt.value = ''
 
         try {
-            uploadImage()
+            const imageData = await uploadImage()
+            result.images = imageData
 
             const response = await fetch('/recipe/', {
                 method: 'POST',
@@ -177,8 +179,7 @@ const uploadImage = async () => {
     for (let i = 0; i < fileInput.files.length; i++) {
         formData.append('images', fileInput.files[i])
     }
-    
-    // console.log(formData)
+    fileInput.value = null
 
     try {
         const response = await fetch('/images', {
@@ -188,6 +189,7 @@ const uploadImage = async () => {
         if (!response.ok) {
             throw new Error(`HTTP Error: ${response.status}`)
         }
+        return await response.json()
     } catch (error) {
         console.log(`Error when trying to upload image: ${error.message}`)
     }
