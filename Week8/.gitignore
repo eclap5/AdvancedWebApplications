@@ -1,2 +1,8 @@
-**/node_modules
+# Node Js
+node_modules/
+
+# Environment Variables
+.env
+
+# Zip archived files 
 *.zip
