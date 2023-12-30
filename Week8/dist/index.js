@@ -12,6 +12,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const Users_1 = require("./src/models/Users");
 const validateToken_1 = require("./src/middleware/validateToken");
 const inputValidation_1 = require("./src/validators/inputValidation");
+const Todo_1 = require("./src/models/Todo");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = parseInt(process.env.PORT) || 3000;
@@ -33,7 +34,7 @@ app.post('/api/user/register', inputValidation_1.validateEmail, inputValidation_
         }
         const salt = bcrypt_1.default.genSaltSync(10);
         const hash = bcrypt_1.default.hashSync(req.body.password, salt);
-        Users_1.User.create({
+        await Users_1.User.create({
             email: req.body.email,
             password: hash
         });
@@ -67,5 +68,27 @@ app.post('/api/user/login', inputValidation_1.validateEmail, async (req, res) =>
 });
 app.get('/api/private', validateToken_1.validateToken, (req, res) => {
     res.json({ email: req.user.email });
+});
+app.post('/api/todos', validateToken_1.validateToken, async (req, res) => {
+    try {
+        const existingTodoList = await Todo_1.Todo.findOne({ user: req.user._id });
+        if (existingTodoList) {
+            for (let i = 0; i < req.body.items.length; i++) {
+                existingTodoList.items.push(req.body.items[i]);
+            }
+            await existingTodoList.save();
+        }
+        else {
+            await Todo_1.Todo.create({
+                user: req.user._id,
+                items: req.body.items
+            });
+        }
+        return res.status(200).send('ok');
+    }
+    catch (error) {
+        console.error(`Error while adding todos: ${error}`);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
 });
 app.listen(port, () => { console.log(`App is running on port ${port}`); });

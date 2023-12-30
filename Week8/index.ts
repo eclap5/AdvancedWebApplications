@@ -7,6 +7,7 @@ import dotenv from "dotenv"
 import { User, IUser } from "./src/models/Users"
 import { validateToken } from "./src/middleware/validateToken"
 import { validateEmail, validatePassword } from "./src/validators/inputValidation"
+import { Todo, ITodo } from "./src/models/Todo"
 
 dotenv.config()
 
@@ -41,7 +42,7 @@ app.post('/api/user/register',
         const salt: string = bcrypt.genSaltSync(10)
         const hash: string = bcrypt.hashSync(req.body.password, salt)
 
-        User.create({
+        await User.create({
             email: req.body.email,
             password: hash
         })
@@ -81,5 +82,29 @@ app.post('/api/user/login',
 app.get('/api/private', validateToken, (req: Request, res: Response) => {
     res.json({ email: (req.user as { email: string }).email })
 })
+
+app.post('/api/todos', validateToken, async (req: Request, res: Response) => {
+    try {
+        const existingTodoList: ITodo | null = await Todo.findOne({ user: (req.user as {_id: string})._id })
+
+        if (existingTodoList) {
+            for (let i: number = 0; i < req.body.items.length; i++) {
+                existingTodoList.items.push(req.body.items[i])
+            }
+            await existingTodoList.save()
+        } else {
+            await Todo.create({
+                user: (req.user as { _id: string })._id,
+                items: req.body.items
+            })
+        }
+        return res.status(200).send('ok')
+
+    } catch (error: any) {
+        console.error(`Error while adding todos: ${error}`)
+        return res.status(500).json({ error: 'Internal Server Error' })
+    }
+})
+
 
 app.listen(port, () => { console.log(`App is running on port ${port}`) })
