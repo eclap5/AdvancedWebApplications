@@ -13,7 +13,16 @@ const inputValidation_1 = require("../validators/inputValidation");
 const Todo_1 = require("../models/Todo");
 const router = express_1.default.Router();
 router.get('/', (req, res) => {
-    res.render('layout');
+    res.render('index');
+});
+router.get('/auth', (req, res) => {
+    if (req.headers.authorization) {
+        const token = req.header('authorization')?.split(' ');
+        if (token) {
+            const decodedToken = jsonwebtoken_1.default.decode(token[1]);
+            return res.json({ email: decodedToken.email });
+        }
+    }
 });
 router.get('/register.html', (req, res) => {
     res.render('register');
@@ -24,6 +33,7 @@ router.post('/register', inputValidation_1.validateEmail, inputValidation_1.vali
         return res.status(400).json({ errors: errors.array() });
     }
     try {
+        console.log('Registering new user');
         const existingUser = await Users_1.User.findOne({ email: req.body.email });
         if (existingUser) {
             return res.status(403).json({ email: 'Email already in use.' });
@@ -34,6 +44,7 @@ router.post('/register', inputValidation_1.validateEmail, inputValidation_1.vali
             email: req.body.email,
             password: hash
         });
+        console.log('User registered');
         return res.status(200).json({ message: 'User registered successfully.' });
     }
     catch (error) {
@@ -85,6 +96,12 @@ router.post('/api/todos', validateToken_1.validateToken, async (req, res) => {
     catch (error) {
         console.error(`Error while adding todos: ${error}`);
         return res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+router.get('/api/todos', validateToken_1.validateToken, async (req, res) => {
+    const existingTodoList = await Todo_1.Todo.findOne({ user: req.user._id });
+    if (existingTodoList) {
+        return res.json({ items: existingTodoList.items });
     }
 });
 exports.default = router;

@@ -11,7 +11,17 @@ import { Todo, ITodo } from "../models/Todo"
 const router: Router = express.Router()
 
 router.get('/', (req: Request, res: Response) => {
-    res.render('layout')
+    res.render('index')
+})
+
+router.get('/auth', (req: Request, res: Response) => {
+    if (req.headers.authorization) {
+        const token: string[] | undefined = req.header('authorization')?.split(' ') 
+        if (token) {
+            const decodedToken: string | JwtPayload | null = jwt.decode(token[1])
+            return res.json({ email: (decodedToken as {email: string}).email })
+        }
+    }
 })
 
 router.get('/register.html', (req: Request, res: Response) => {
@@ -41,7 +51,6 @@ router.post('/register',
             email: req.body.email,
             password: hash
         })
-
         return res.status(200).json({ message: 'User registered successfully.' })
     } catch (error: any) {
         console.error(`Error during user registration: ${error}`)
@@ -98,6 +107,14 @@ router.post('/api/todos', validateToken, async (req: Request, res: Response) => 
     } catch (error: any) {
         console.error(`Error while adding todos: ${error}`)
         return res.status(500).json({ error: 'Internal Server Error' })
+    }
+})
+
+router.get('/api/todos', validateToken, async (req: Request, res: Response) => {
+    const existingTodoList: ITodo | null = await Todo.findOne({ user: (req.user as {_id: string})._id })
+
+    if (existingTodoList) {
+        return res.json({ items: existingTodoList.items })
     }
 })
 

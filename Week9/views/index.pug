@@ -1,0 +1,16 @@
+extends layout
+
+block content 
+    div(id='container')
+        div(id='unregistered')
+            a(class='btn', href='/register.html') Register
+            a(class='btn', href='/login.html') Login
+
+        div(id='registered', style='display: none')
+            p(id='email')
+            input(type='text', id='add-item', placeholder='Add Todo')
+            div(id='todos')
+                h3 Todos:
+                ul(id='todo-list')
+    
+    script(src='/js/index.js')

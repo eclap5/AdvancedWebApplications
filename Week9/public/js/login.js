@@ -19,9 +19,10 @@ const fetchData = async (event) => {
         const response = await fetch('/login', {
             method: 'POST',
             body: formData
-        })      
-        if (response.status === 401) {
-            alert('Invalid password')
+        })
+        
+        if (response.status === 401 || response.status === 403) {
+            document.getElementById('login-error').textContent = 'Invalid credentials'
         } else {
             const data = await response.json()
             if (data.token) {

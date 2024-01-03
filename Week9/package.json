@@ -4,7 +4,9 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "tsc-watch --noClear -p ./tsconfig.json --onSuccess \"nodemon ./dist/app.js\"",
+    "build": "tsc",
+    "start": "npm run build && node ./dist/app.js",
+    "start-dev": "tsc-watch --noClear -p ./tsconfig.json --onSuccess \"nodemon ./dist/app.js\"",
     "zip": "rm -f solution.zip && 7z a -r solution.zip * -xr!node_modules"
   },
   "keywords": [],

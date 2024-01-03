@@ -1,0 +1,28 @@
+body {
+    margin: 2%;
+}
+
+::placeholder {
+    color: black;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+}
+
+#todo-list {
+    margin-left: 2%;
+}
+
+.list-item {
+    list-style-type: disc !important;
+}
+
+#register-error {
+    color: red;
+}
+
+#login-error {
+    color: red;
+}
