@@ -8,6 +8,8 @@
 # testing
 /coverage
 /src/__test__
+*.zip
+
 # production
 /build
 
